@@ -38,7 +38,11 @@ function settextField(text, predict) {
 
 function setPredictFunction(predict) {
   const textField = document.getElementById('text-entry');
-  textField.addEventListener('input', () => doPredict(predict));
+  // textField.addEventListener('input', () => doPredict(predict));
+  const predict_button = document.getElementById('predict');
+  predict_button.addEventListener('click', () => {
+      doPredict(predict);
+  })
 }
 
 function disableLoadModelButtons() {
@@ -50,11 +54,17 @@ function doPredict(predict) {
   const result = predict(textField.value);
   // console.log(result)
   score_string = "R, G, B: ";
+  color_string = "#";
   for (var x in result.score) {
     // console.log(x)
-    score_string += result.score[x] + ", "
+    score_string += result.score[x] + ", ";
+    color_string += result.score[x].toString(16);
   }
   //console.log(score_string);
+  // console.log(color_string);
+  const color = document.getElementById('colorlabel');
+
+  color.style.backgroundColor = color_string;
   status(
       score_string + ' elapsed: ' + result.elapsed.toFixed(3) + ' ms)');
 }
@@ -65,6 +75,10 @@ function prepUI(predict) {
   testExampleSelect.addEventListener('change', () => {
     settextField(examples[testExampleSelect.value], predict);
   });
+  // const predict_button = document.getElementById('predict');
+  // predict_button.addEventListener('click', () => {
+  //   doPredict(predict);
+  // })
   settextField(examples['example1'], predict);
 }
 
@@ -139,16 +153,16 @@ class Classifier {
     status('Running inference');
     const beginMs = performance.now();
     const predictOut = this.model.predict(input);
-    console.log(123)
+    // console.log(123)
     // console.log(predictOut.dataSync());
     const score = predictOut.dataSync();//[0];
     predictOut.dispose();
     const endMs = performance.now();
-    console.log(score.length)
+    // console.log(score.length)
     for (let i = 0; i < score.length; i++){
       score[i] = parseInt(score[i] * 255)
     }
-    console.log(score)
+    // console.log(score)
 
     return {score: score, elapsed: (endMs - beginMs)};
   }
@@ -163,6 +177,10 @@ async function setup() {
       prepUI(x => predictor.predict(x));
     });
     button.style.display = 'inline-block';
+    // const button_1 = document.getElementById('predict');
+    // button_1.addEventListener('click', async () => {
+
+    // })
   }
 
   status('Standing by.');
