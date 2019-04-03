@@ -126,7 +126,7 @@ class Classifier {
         text.trim().toLowerCase().replace(/(\.|\,|\!)/g, '');
     // Look up word indices.
     console.log(inputText);
-    const inputBuffer = tf.buffer([this.maxLen，1], 'float32');
+    const inputBuffer = tf.buffer([this.maxLen,1], 'float32');
     for (let i = 0; i < inputText.length; ++i) {
       const word = inputText[i];
       inputBuffer.set(this.wordIndex[word], i, 0);
