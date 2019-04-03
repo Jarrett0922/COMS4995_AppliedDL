@@ -48,8 +48,10 @@ function disableLoadModelButtons() {
 function doPredict(predict) {
   const textField = document.getElementById('text-entry');
   const result = predict(textField.value);
+  // console.log(result)
   score_string = "R, G, B: ";
   for (var x in result.score) {
+    // console.log(x)
     score_string += result.score[x] + ", "
   }
   //console.log(score_string);
@@ -125,12 +127,11 @@ class Classifier {
     const inputText =
         text.trim().toLowerCase().replace(/(\.|\,|\!)/g, '');
     // Look up word indices.
-    console.log(inputText);
-    const inputBuffer = tf.buffer([this.maxLen,1], 'float32');
+    const inputBuffer = tf.buffer([1, this.maxLen], 'float32');
     for (let i = 0; i < inputText.length; ++i) {
       const word = inputText[i];
-      inputBuffer.set(this.wordIndex[word], i, 0);
-      console.log(word, this.wordIndex[word], inputBuffer);
+      inputBuffer.set(this.wordIndex[word], 0, this.maxLen - inputText.length + i);
+      //console.log(word, this.wordIndex[word], inputBuffer);
     }
     const input = inputBuffer.toTensor();
     //console.log(input);
@@ -138,11 +139,16 @@ class Classifier {
     status('Running inference');
     const beginMs = performance.now();
     const predictOut = this.model.predict(input);
-    //console.log(predictOut.dataSync());
+    console.log(123)
+    // console.log(predictOut.dataSync());
     const score = predictOut.dataSync();//[0];
     predictOut.dispose();
     const endMs = performance.now();
-    console.log(score);
+    console.log(score.length)
+    for (let i = 0; i < score.length; i++){
+      score[i] = parseInt(score[i] * 255)
+    }
+    console.log(score)
 
     return {score: score, elapsed: (endMs - beginMs)};
   }
