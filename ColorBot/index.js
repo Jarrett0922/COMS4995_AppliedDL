@@ -27,7 +27,7 @@ function showMetadata(metadataJSON) {
   document.getElementById('vocabularySize').textContent =
       metadataJSON['vocabulary_size'];
   document.getElementById('maxLen').textContent =
-      metadataJSON['maxlen'];
+      metadataJSON['max_len'];
 }
 
 function settextField(text, predict) {
